@@ -17,14 +17,4 @@ class Page extends Model
         'content',
     ];
 
-    public function sluggable()
-    {
-        return [
-            'slug' => [
-                'source' => 'title'
-            ]
-        ];
-    }
-
-
 }

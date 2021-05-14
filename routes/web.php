@@ -13,9 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
- Route::get('/', function () {
-     return view('welcome');
- });
+Route::get('/', function () {
+   return view('welcome');
+});
+
+Route::get('/migrate', function () {
+    return Artisan::call('migrate:fresh', ["--force" => true ]);
+});
+
+Route::get('/key-generate', function () {
+    return Artisan::call('key:generate');
+});
 
 Route::group(['middleware' => [
     'auth:sanctum',
@@ -28,8 +36,12 @@ Route::group(['middleware' => [
     Route::get('/pages', function () {
         return view('admin.pages');
     })->name('pages');
+
+    Route::get('/posts', function () {
+        return view('posts.posts');
+    })->name('posts');
 });
 
-Route::get('/{urlslug}', \App\Http\Livewire\Frontpage::class);
+Route::get('/post/{urlslug}', \App\Http\Livewire\Frontpage::class);
 //Route::get('/', \App\Http\Livewire\Frontpage::class);
 //
