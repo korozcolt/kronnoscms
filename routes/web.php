@@ -18,7 +18,11 @@ Route::get('/', function () {
 });
 
 Route::get('/migrate', function () {
-    return Artisan::call('migrate:fresh', ["--force" => true ]);
+    if(Artisan::call('migrate:fresh', ["--force" => true ])){
+        return 'HECHO';
+    }else{
+        return 'ERROR';
+    }
 });
 
 Route::get('/key-generate', function () {
