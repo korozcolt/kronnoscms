@@ -1,0 +1,4 @@
+---
+deployment:
+  tasks:
+    - export DEPLAOYPATH=/home/lim8xduf8pki/kronnos.co

@@ -29,6 +29,10 @@ Route::get('/key-generate', function () {
     return Artisan::call('key:generate');
 });
 
+Route::get('/storage', function () {
+    return Artisan::call('storage:link');
+});
+
 Route::group(['middleware' => [
     'auth:sanctum',
     'verified'
