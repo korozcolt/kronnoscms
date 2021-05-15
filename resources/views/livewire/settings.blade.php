@@ -1,4 +1,11 @@
 <div class="p-6">
+    <div>
+        @if(session()->has('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
+    </div>
     <div class="flex items-center justify-end px-4 py-3 text-right sm:px:6">
         <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full mr-3">{{ $data->count() }} {{ $data->count() < 2 ? ' Item' : ' Items' }}</span>
         <x-jet-button wire:click="createShowModal">
@@ -14,9 +21,8 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Titulo</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Link</th>
-                                <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">Content</th>
                                 <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"></th>
                             </tr>
                         </thead>
@@ -31,12 +37,13 @@
                                             <a
                                                 class="text-indigo-600 hover:text-indigo-900"
                                                 target="_blank"
-                                                href="{{ URL::to('post/'.$item->slug)}}"
+                                                href="{{ URL::to('/'.$item->slug)}}"
                                             >
-                                                {{ $item->slug }}
+                                            {!! \Illuminate\Support\Str::limit($item->slug, 20, '...') !!}
                                             </a>
                                         </td>
-                                        <td class="px-6 py-4 text-sm whitespace-no-wrap">{!! \Illuminate\Support\Str::limit($item->content, 50, '...') !!}</td>
+                                        <td class="px-6 py-4 text-sm whitespace-no-wrap">{{ $item->category->name }}</td>
+                                        <td class="px-6 py-4 text-sm whitespace-no-wrap">{{ $item->tag->name }}</td>
                                         <td class="px-6 py-4 text-right text-sm">
                                             <div class="inline-flex">
                                                 <x-jet-button class="mx-1 font-bold py-2 px-4 rounded-full" wire:click="updateShowModal({{ $item->id }})">
@@ -65,23 +72,19 @@
     {{-- Modal Form --}}
     <x-jet-dialog-modal wire:model="modalFormVisible">
         <x-slot name="title">
-            {{ __('Save Page') }}
+            {{ __('Guardar Posts') }}
         </x-slot>
         <x-slot name="content">
             <div class="mt-4">
-                <x-jet-label for="title" value="{{ __('Title') }}" />
+                <x-jet-label for="title" value="{{ __('Titulo') }}" />
                 <x-jet-input id="title" class="block mt-1 w-full" type="text" wire:model.debounce.800ms="title" required />
                 @error('title') <span class="error">{{ $message }}</span> @enderror
             </div>
+            
             <div class="mt-4">
-                <x-jet-label for="title" value="{{ __('Slug') }}" />
-                <div class="mt-1 flex rounded-md shadow-sm">
-                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                        http://localhost:8000/
-                    </span>
-                    <input wire:model="slug" class="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5" placeholder="url-slug">
-                </div>
-                @error('slug') <span class="error">{{ $message }}</span> @enderror
+                <x-jet-label for="author" value="{{ __('Autor') }}" />
+                <x-jet-input id="author" class="block mt-1 w-full" type="text" wire:model.debounce.800ms="author" required />
+                @error('author') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
                 <x-jet-label for="content" value="{{ __('Content') }}" />
@@ -124,7 +127,7 @@
         </x-slot>
 
         <x-slot name="content">
-            {{ __('Are you sure you want to delete this page? Once the page is deleted, all of its resources and data will be permanently deleted.') }}
+            {{ __('Estas seguroq ue quieres borrar este POST? Una vez que este post esté borrado ya no podrás recuperarlo.') }}
         </x-slot>
 
         <x-slot name="footer">
@@ -137,5 +140,5 @@
             </x-jet-danger-button>
         </x-slot>
     </x-jet-dialog-modal>
-
 </div>
+

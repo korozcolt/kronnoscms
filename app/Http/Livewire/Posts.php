@@ -36,7 +36,7 @@ class Posts extends Component
             'content' => 'required',
             'tag_id' => 'required',
             'category_id' => 'required',
-            'photo' => ['required','image|max:2048'], 
+            'photo' => 'required|image|mimes:jpg,jpeg,png,svg,gif|max:2048', 
             'author' => 'required'           
         ];
     }
@@ -52,8 +52,10 @@ class Posts extends Component
      */
     public function create(){ 
         $this->validate();
+        $this->photo->store('photo','public');
         Post::create($this->modelData());
         $this->modalFormVisible = false;
+        session()->flash('message', 'Datos guardados.');
         $this->cleanVars();
     }
     
@@ -137,6 +139,7 @@ class Posts extends Component
      * @return void
      */
     public function modelData(){
+
         return [
             'title' => $this->title,
             'slug' => $this->slug,

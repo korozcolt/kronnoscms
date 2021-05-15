@@ -1,4 +1,11 @@
 <div class="p-6">
+    <div>
+        @if(session()->has('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
+    </div>
     <div class="flex items-center justify-end px-4 py-3 text-right sm:px:6">
         <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full mr-3">{{ $data->count() }} {{ $data->count() < 2 ? ' Item' : ' Items' }}</span>
         <x-jet-button wire:click="createShowModal">
@@ -78,6 +85,10 @@
             <div class="mt-4">
                 <x-jet-label for="photo" value="{{ __('Imagen frontal') }}" />
                 <x-jet-input id="photo" class="block mt-1 w-full" type="file" wire:model.debounce.800ms="photo" required />
+                @if ($photo)
+                    Photo Preview:
+                    <img src="{{ $photo->temporaryUrl() }}">
+                @endif
                 @error('photo') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
@@ -111,6 +122,11 @@
                     @endforelse
                 </select>
                 @error('tag_id') <span class="error">{{ $message }}</span> @enderror
+            </div>
+            <div class="mt-4">
+                <x-jet-label for="author" value="{{ __('Autor') }}" />
+                <x-jet-input id="author" class="block mt-1 w-full" type="text" wire:model.debounce.800ms="author" required />
+                @error('author') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
                 <x-jet-label for="content" value="{{ __('Content') }}" />
