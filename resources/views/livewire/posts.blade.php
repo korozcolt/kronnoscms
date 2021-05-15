@@ -1,4 +1,11 @@
 <div class="p-6">
+    <div>
+        @if(session()->has('message'))
+            <div class="alert alert-success">
+                {{ session('message') }}
+            </div>
+        @endif
+    </div>
     <div class="flex items-center justify-end px-4 py-3 text-right sm:px:6">
         <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full mr-3">{{ $data->count() }} {{ $data->count() < 2 ? ' Item' : ' Items' }}</span>
         <x-jet-button wire:click="createShowModal">
@@ -76,6 +83,15 @@
                 @error('title') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
+                <x-jet-label for="photo" value="{{ __('Imagen frontal') }}" />
+                <x-jet-input id="photo" class="block mt-1 w-full" type="file" wire:model.debounce.800ms="photo" required />
+                @if ($photo)
+                    Photo Preview:
+                    <img src="{{ $photo->temporaryUrl() }}">
+                @endif
+                @error('photo') <span class="error">{{ $message }}</span> @enderror
+            </div>
+            <div class="mt-4">
                 <x-jet-label for="slug" value="{{ __('Slug') }}" />
                 <div class="mt-1 flex rounded-md shadow-sm">
                     <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
@@ -86,36 +102,31 @@
                 @error('slug') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
-                <x-jet-label for="categories" value="{{ __('Categoría') }}" />
-                <select id="categories" wire:model="categories" class="block mt-1 w-full">
-                    @if (is_array($categories)) || is_object($categories))
-                        <option value="NULL" selected>Escoge una opción</option>
-                        @forelse ($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @empty
-                            <option value="NULL">No existen categorias</option>
-                        @endforelse
-                    @else
-                    <option value="NULL">No existen categorias</option>
-                    @endif
+                <x-jet-label for="category" value="{{ __('Categoría') }}" />
+                <select name="category_id" wire:model.debounce.800ms="category" class="block mt-1 w-full">  
+                    @forelse($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @empty
+                        <option value="NULL">No existen categorias</option>
+                    @endforelse
                 </select>
-                @error('categories') <span class="error">{{ $message }}</span> @enderror
+                @error('category_id') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
                 <x-jet-label for="tags" value="{{ __('Pagina a publicar') }}" />
-                <select id="tags" wire:model="tags" class="block mt-1 w-full">
-                    @if (is_array($tags)) || is_object($tags))
-                        <option value="NULL" selected>Escoge una opción</option>
-                        @forelse ($tags as $tag)
-                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
-                        @empty
-                            <option value="NULL">No existen Paginas</option>
-                        @endforelse
-                    @else
+                <select name="tag_id" wire:model.debounce.800ms="tag" class="block mt-1 w-full">
+                    @forelse($tags as $tag)
+                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                    @empty
                         <option value="NULL">No existen Paginas</option>
-                    @endif
+                    @endforelse
                 </select>
-                @error('tags') <span class="error">{{ $message }}</span> @enderror
+                @error('tag_id') <span class="error">{{ $message }}</span> @enderror
+            </div>
+            <div class="mt-4">
+                <x-jet-label for="author" value="{{ __('Autor') }}" />
+                <x-jet-input id="author" class="block mt-1 w-full" type="text" wire:model.debounce.800ms="author" required />
+                @error('author') <span class="error">{{ $message }}</span> @enderror
             </div>
             <div class="mt-4">
                 <x-jet-label for="content" value="{{ __('Content') }}" />
