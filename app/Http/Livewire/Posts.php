@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -13,11 +14,16 @@ use App\Models\Category;
 class Posts extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public $slug;
     public $title;
+    public $author;
+    public $category; 
     public $categories;
     public $tags;
+    public $photo;
+    public $tag;
     public $content;
     public $modalFormVisible = false;
     public $modalConfirmDeleteVisible = false;
@@ -28,8 +34,10 @@ class Posts extends Component
             'title' => 'required',
             'slug' => ['required', Rule::unique('posts','slug')->ignore($this->modelId)],
             'content' => 'required',
-            'tags' => 'required',
-            'categories' => 'required',            
+            'tag_id' => 'required',
+            'category_id' => 'required',
+            'photo' => ['required','image|max:2048'], 
+            'author' => 'required'           
         ];
     }
 
@@ -86,14 +94,13 @@ class Posts extends Component
         $this->title = $data->title;
         $this->slug = $data->slug;
         $this->content = $data->content;
-        $this->categories = $data->category_id;
-        $this->tags = $data->tag_id;
+        $this->category = $data->category_id;
+        $this->tag = $data->tag_id;
+        $this->author = $data->author;
      }
 
     public function mount(){ 
         $this->resetPage();
-        $this->categories = Category::all();
-        $this->tags = Tag::all();
     }
 
     public function updateShowModal($id){
@@ -134,8 +141,10 @@ class Posts extends Component
             'title' => $this->title,
             'slug' => $this->slug,
             'content' => $this->content,
-            'category_id' => $this->categories,
-            'tag_id' => $this->tags,
+            'category_id' => $this->category_id,
+            'tag_id' => $this->tag_id,
+            'photo' => $this->photo,
+            'author' => $this->author,
         ];
     }
     
@@ -149,8 +158,10 @@ class Posts extends Component
         $this->title = null;
         $this->slug = null;
         $this->content = null;
-        $this->categories = null;
-        $this->tags = null;
+        $this->category_id = null;
+        $this->tag_id = null;
+        $this->photo = null;
+        $this->author = null;
     }
         
     /**
@@ -158,8 +169,9 @@ class Posts extends Component
      *
      * @return void
      */
-    public function render()
-    {
+    public function render(){
+        $this->categories = Category::orderBy('name')->get();
+        $this->tags = Tag::orderBy('name')->get();
         return view('livewire.posts',[
             'data' => $this->read(),
         ]);

@@ -24,6 +24,8 @@ class Post extends Model
         'slug',
         'content',
         'category_id',
-        'tag_id'
+        'tag_id',
+        'image',
+        'author'
     ];
 }
